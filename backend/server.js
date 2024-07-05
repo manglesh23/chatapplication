@@ -1,8 +1,12 @@
 const express = require("express");
 const { connectdatabase } = require("./databaseconnect/databaseconnect");
+const { router } = require("./authrouter/authrouter");
+
 require("dotenv").config();
 const app = express();
+
 app.use(express.json());
+app.use("/", router);
 
 connectdatabase()
   .then(() => {
