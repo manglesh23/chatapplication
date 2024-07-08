@@ -1,7 +1,7 @@
 const { chats } = require("../data/data");
 
 
-const signup=async(req,res)=>{
+const registerUser=async(req,res)=>{
     console.log(req);
    
     res.status(200).json({msg:"signup"});
@@ -14,4 +14,4 @@ const userlogin=async(req,res)=>{
 
 
 
-module.exports={signup,userlogin}
+module.exports={registerUser,userlogin}
