@@ -1,8 +1,9 @@
 const { chats } = require("../data/data");
-const generateToken = require("../middleware/generateToken");
+const {generateToken} = require("../middleware/generateToken");
 const User = require("../models/user");
 
 const registerUser = async (req, res) => {
+    try{
   const { name, email, password, pic } = req.body;
 
   if (!name || !email || !password) {
@@ -33,6 +34,9 @@ const registerUser = async (req, res) => {
   } else {
     res.status(400).json({ msg: "failed to register" });
   }
+}catch(e){
+    console.log(e);
+}
 };
 
 const userlogin = async (req, res) => {
