@@ -18,11 +18,11 @@ const userSchema = mongoose.Schema(
       default: false,
     },
   },
-  { timestaps: true }
+  { timestamps: true }
 );
 
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+userSchema.methods.matchPassword =  function (enteredPassword) {
+  return  bcrypt.compareSync(enteredPassword, this.password);
 };
 
 userSchema.pre("save", async function (next) {
