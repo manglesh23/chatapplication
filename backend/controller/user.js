@@ -43,11 +43,12 @@ const userlogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     const checkuser = await User.findOne({ email: email });
+    console.log(checkuser);
     if (!checkuser || !checkuser.matchPassword(password)) {
       res.status(404).json({ msg: "Incorrect password" });
     }
-    res.status(200).json({ msg: "Login Successful" });
-   
+    let token = generateToken(checkuser._id);
+    res.status(200).json({ msg: "Login Successful", token: token });
   } catch (e) {
     return {
       error: true,
@@ -56,19 +57,25 @@ const userlogin = async (req, res) => {
   }
 };
 
-const getalluser= async(req,res)=>{
-    try{
-      const keyword=req.query;
-      console.log("Keywords:-",keyword);
-        // let getAllUser= await User.find();
-        // res.status(200).json({msg:getAllUser});
+const getalluser = async (req, res) => {
+  try {
+    const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
 
-    }catch(e){
-        return{
-            error:true,
-            details:e
-        }
-    }
-}
+  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+  res.send(users);
+  } catch (e) {
+    return {
+      error: true,
+      details: e,
+    };
+  }
+};
 
-module.exports = { registerUser, userlogin ,getalluser};
+module.exports = { registerUser, userlogin, getalluser };
