@@ -1,5 +1,6 @@
 const { chats } = require("../data/data");
 const Chat = require("../models/chatName");
+const User = require("../models/user");
 
 const chatbyid = async (req, res) => {
   console.log(req.params.id);
@@ -15,6 +16,13 @@ const chataccess = async (req, res) => {
     if (!userId) {
       res.status(404).json({ msg: "Didn't find User Id" });
     }
+    console.log("req.user:-", req.user._id);
+    const allchat = await Chat.find({});
+    console.log("all chat:-", allchat);
+
+    // if (allchat.length === 0) {
+    //   res.send("empty");
+    // }
 
     const isChat = await Chat.find({
       isGroupChat: false,
@@ -25,6 +33,41 @@ const chataccess = async (req, res) => {
     })
       .populate("users", "-password")
       .populate("latestMessage");
+
+    console.log("Chat:-", isChat);
+
+   const populatedChat = await User.populate(isChat, {
+      path: "latestMessage.sender",
+      select: "name pic email",
+    });
+
+    console.log("above if");
+
+    if (populatedChat.length > 0) {
+      res.send(populatedChat[0]);
+    } else {
+      try {
+        let chatData = {
+          chatName: "sender",
+          isGroupChat: false,
+          users: [req.user._id, userId],
+        };
+        console.log("inside else");
+
+        let createchat = await Chat.create(chatData);
+        let fullchat = await Chat.findOne({ _id: createchat._id }).populate(
+          "users",
+          "-password"
+        );
+        console.log("final");
+        res.status(200).json({ msg: fullchat });
+      } catch (e) {
+        return {
+          error: true,
+          details: e,
+        };
+      }
+    }
   } catch (e) {
     return {
       error: true,
@@ -32,4 +75,4 @@ const chataccess = async (req, res) => {
     };
   }
 };
-module.exports = { chatbyid };
+module.exports = { chataccess, chatbyid };
