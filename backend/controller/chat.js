@@ -36,7 +36,7 @@ const chataccess = async (req, res) => {
 
     console.log("Chat:-", isChat);
 
-   const populatedChat = await User.populate(isChat, {
+    const populatedChat = await User.populate(isChat, {
       path: "latestMessage.sender",
       select: "name pic email",
     });
@@ -75,4 +75,64 @@ const chataccess = async (req, res) => {
     };
   }
 };
-module.exports = { chataccess, chatbyid };
+
+const fetchchat = async (req, res) => {
+  try {
+    // res.status(200).json({msg:"fetch data"});
+    console.log(req.user._id);
+    Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+      .populate("users", "name email pic")
+      .populate("groupAdmin", "-password")
+      .populate("latestMessage")
+      .sort({ updatedAt: -1 })
+      .then(async (result) => {
+        console.log("result:-", result);
+        result = await User.populate(result, {
+          path: "latestMessage.sender",
+          select: "name pic",
+        });
+        res.send(result);
+      });
+  } catch (e) {
+    return {
+      error: true,
+      details: e,
+    };
+  }
+};
+
+const createGroupChat = async (req, res) => {
+  try {
+    // console.log("Req.user:-",req.user);
+    if (!req.body.users || !req.body.name) {
+      return res.status(400).json({ msg: "please fill the mendatory fields" });
+    }
+    let users = JSON.parse(req.body.users);
+    if (users.length < 2) {
+      return res
+        .status(400)
+        .send("More than 2 users are required to form a group chat");
+    }
+    users.push(req.user);
+
+    let groupchat = await Chat.create({
+        chatName: req.body.name,
+        users: users,
+        isGroupChat: true,
+        groupAdmin: req.user,
+    });
+    console.log("chat created",groupchat);
+    //  console.log("group id:-",groupchat._id);
+    let getfullchat = await Chat.find({ _id: groupchat._id })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+      res.status(200).json({msg:getfullchat});
+  } catch (e) {
+    return {
+      error: true,
+      details: e,
+    };
+  }
+};
+module.exports = { chataccess, chatbyid, fetchchat, createGroupChat };
