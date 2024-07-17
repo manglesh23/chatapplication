@@ -161,15 +161,58 @@ const renameGroup = async (req, res) => {
   }
 };
 
-const addtogroup= async(req,res)=>{
-    try{
-        const{chatId,userId}=req.body
-    }catch(e){
-        return{
-            error:true,
-            details:e
-        }
+const addtogroup = async (req, res) => {
+  try {
+    const { chatId, userId } = req.body;
+
+    let added = await Chat.findByIdAndUpdate(
+      chatId,
+      { $push: { users: userId } },
+      { new: true }
+    )
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    if (!added) {
+      res.status(404).json({ msg: "Failed to add" });
+    } else {
+      res.status(200).json({ msg: added });
     }
+
+  } catch (e) {
+    return {
+      error: true,
+      details: e,
+    };
+  }
+};
+
+const removefromgroup=async(req,res)=>{
+    try {
+        const { chatId, userId } = req.body;
+        console.log(chatId,userId);
+        console.log("find and delete");
+        let removed = await Chat.findByIdAndUpdate(
+          chatId,
+          { $pull: { users: userId } },
+          { new: true }
+        )
+          .populate("users", "-password")
+          .populate("groupAdmin", "-password");
+        
+          console.log("Remove:-",removed)
+        if (!removed) {
+          res.status(404).json({ msg: "Failed to remove"});
+        } else {
+          res.status(200).json({ msg: removed });
+        }
+    
+      } catch (e) {
+        return {
+          error: true,
+          details: e,
+        };
+      }
 }
 
 module.exports = {
@@ -178,4 +221,6 @@ module.exports = {
   fetchchat,
   createGroupChat,
   renameGroup,
+  addtogroup,
+  removefromgroup
 };
