@@ -48,7 +48,7 @@ const userlogin = async (req, res) => {
       res.status(404).json({ msg: "Incorrect password" });
     }
     let token = generateToken(checkuser._id);
-    res.status(200).json({ msg: "Login Successful", token: token });
+    res.status(200).json({ msg: "let's chat", token: token });
   } catch (e) {
     return {
       error: true,
