@@ -1,13 +1,31 @@
-import React from 'react';
-// import Chat from './Chat';
+// import { Button } from "@chakra-ui/react";
+
+// import React from "react";
+// import { Route } from "react-router-dom";
+// import Homepage from "./Pages/Homepage";
+
+// // import Chat from './Chat';
+
+// function App() {
+//   return (
+//     <div className="App">
+//       <Route path="/home" component={Homepage}/>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Homepage from "./Pages/Homepage";
 
 function App() {
-  const userId = "yourUserId"; // Replace with the actual user ID
-
   return (
     <div className="App">
-      {/* <Chat userId={userId} /> */}
-      <h1>Chat App</h1>
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+      </Routes>
     </div>
   );
 }

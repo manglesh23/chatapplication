@@ -7,16 +7,24 @@ require("dotenv").config();
 const app = express();
 
 const server = http.createServer(app); //created the server here
-const io = require("socket.io")(server);
+
+const io = require("socket.io")(server,{
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3001",
+    // credentials: true,
+  },
+});
 
 app.use(express.json());
 app.use("/", router);
 
+let PORT=7000;
 connectdatabase()
   .then(() => {
-    server.listen(7000, () => {
+    server.listen(PORT, () => {
       //listenning the server here
-      console.log("listening at 7000");
+      console.log(`listening at ${PORT}`);
     });
   })
   .catch((e) => {
