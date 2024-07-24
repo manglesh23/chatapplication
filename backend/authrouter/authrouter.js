@@ -11,7 +11,7 @@ router.route("/login").get(userlogin);
 router.route("/user").get(protect,getalluser);
 router.route("/chatbyid/:id").get(chatbyid);
 router.route("/accesschat").post(protect,chataccess);
-router.route("/fetchchat").get(protect,fetchchat);
+router.route("/fetchchat").get(protect,fetchchat);                    //token removed
 router.route("/creategroupchat").post(protect,createGroupChat);
 router.route("/rename").put(protect,renameGroup);
 router.route("/addtogroup").put(protect,addtogroup);

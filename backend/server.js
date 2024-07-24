@@ -6,10 +6,17 @@ const { router } = require("./authrouter/authrouter");
 require("dotenv").config();
 const app = express();
 
+const cors = require('cors');
+// app.use(cors());
+
+app.use(cors({
+    origin: 'http://localhost:3001'
+  }));
+
 const server = http.createServer(app); //created the server here
 
 const io = require("socket.io")(server,{
-  pingTimeout: 60000,
+  pingTimeout: 600000,
   cors: {
     origin: "http://localhost:3001",
     // credentials: true,
