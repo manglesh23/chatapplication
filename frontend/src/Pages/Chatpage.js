@@ -6,9 +6,7 @@ const Chatpage = () => {
   const [chats,setchats] =useState([]);
   const fetchchat = async () => {
     try {
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ3MzhmZTVjMzMyMTQwMzc1OWU4MiIsImlhdCI6MTcyMTc1ODI0NywiZXhwIjoxNzIxODQ0NjQ3fQ.N9MZxLH0vQpqVtuJBzSEkq-aznYw0vuPt34k3eByz-E";
-
+      const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ3MzhmZTVjMzMyMTQwMzc1OWU4MiIsImlhdCI6MTcyMTg4MjE0MSwiZXhwIjoxNzIxOTY4NTQxfQ.c_l0k3JU-pt8jd0iMVc2DlK9DqIWiNWvLFeZjmTNBTo"
       let { data } = await axios.get("http://localhost:7000/fetchchat", {
         headers: {
           Authorization: `Bearer ${token}`,
