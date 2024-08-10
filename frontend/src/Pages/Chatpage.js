@@ -1,45 +1,31 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import React, { useEffect, useState } from "react";
+
+import { Box } from "@chakra-ui/react";
+import { ChatState } from "../Context/chatprovider";
+import SideDrawer from "../component/miscellenous/SideDrawer";
+import MyChats from "../component/miscellenous/MyChats";
+import ChatBox from "../component/miscellenous/ChatBox";
 
 const Chatpage = () => {
   // console.log("chat accessing");
-  const [chats,setchats] =useState([]);
-  const fetchchat = async () => {
-    try {
-      const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGQ3MzhmZTVjMzMyMTQwMzc1OWU4MiIsImlhdCI6MTcyMTg4MjE0MSwiZXhwIjoxNzIxOTY4NTQxfQ.c_l0k3JU-pt8jd0iMVc2DlK9DqIWiNWvLFeZjmTNBTo"
-      let { data } = await axios.get("http://localhost:7000/fetchchat", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("chat access");
-      console.log(data);
-      setchats(data);
+  const { user } = ChatState();
 
-    } catch (error) {
-      console.error("Error fetching chat:", error);
-      if (error.response) {
-        // Server responded with a status other than 200 range
-        console.error("Response data:", error.response.data);
-        console.error("Response status:", error.response.status);
-        console.error("Response headers:", error.response.headers);
-      } else if (error.request) {
-        // Request was made but no response received
-        console.error("Request data:", error.request);
-      } else {
-        // Something else happened while setting up the request
-        console.error("Error message:", error.message);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchchat();
-  }, []);
-
-  return <div>{chats.map((chat)=>(
-    <div key={chat._id}>{chat.chatName}</div>
-  ))}</div>;
+  return (
+    <div style={{ width: "100%" }}>
+      
+      {user && <SideDrawer />}
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        width="100%"
+        height="91vh"
+      >
+        {user && <MyChats />}
+        {user && <ChatBox />}
+      </Box>
+    </div>
+  );
 };
 
 export default Chatpage;

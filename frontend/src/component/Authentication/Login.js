@@ -8,16 +8,40 @@ import {
   Button,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [show, setshow] = useState(false);
   const [email, setemail] = useState();
   const [password, setpassowrd] = useState();
+  const navigate = useNavigate();
 
   const handleclick = () => setshow(!show);
 
-  const submithandler = () => {
+  const loginhandler = async () => {
+    // console.log("From Login Button",email,password);
     console.log("login");
+    // let email = "rao@gmail.com";
+    // let password = "12345";
+    
+    let response = await axios.post("http://localhost:7000/login", {
+      email,
+      password,
+    });
+    console.log("Resonse:-", response); //respone from backend
+    // const {token}=response.data;
+    let user = {
+      email: response.data.userInfo.email,
+      name: response.data.userInfo.name,
+      pic: response.data.userInfo.pic,
+      token: response.data.token,
+    };
+    console.log("user:-", user);
+    localStorage.setItem("userInfo", JSON.stringify(user)); //stored the user information in local storage
+    if (response.data) {
+      navigate("/chats");
+    }
   };
 
   return (
@@ -54,7 +78,7 @@ const Login = () => {
         colorScheme="blue"
         width="100%"
         style={{ marginTop: 15 }}
-        onClick={submithandler}
+        onClick={loginhandler}
       >
         Login
       </Button>

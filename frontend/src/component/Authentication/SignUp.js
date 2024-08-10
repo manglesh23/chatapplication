@@ -11,6 +11,7 @@ import React, { useState } from "react";
 
 const SignUp = () => {
   const [show, setshow] = useState(false);
+  const [showconfirm,setshowconfirm]=useState(false);
   const [name, setname] = useState();
   const [email, setemail] = useState();
   const [password, setpassowrd] = useState();
@@ -19,11 +20,15 @@ const SignUp = () => {
 
   const handleclick = () => setshow(!show);
 
+  const handleclickConfirm=()=>setshowconfirm(!showconfirm);
+
   const postdetails = () => {
     console.log("post details");
   };
 
-  const submithandler = () => {};
+  const submithandler = () => {
+    console.log("Sign Up or Register User");
+  };
 
   return (
     <VStack spacing="5px" color="black" width="100%">
@@ -71,13 +76,13 @@ const SignUp = () => {
         </FormLabel>
         <InputGroup>
           <Input
-            type={show ? "text" : "password"}
+            type={showconfirm ? "text" : "password"}
             placeholder="Enter Your Password"
             onChange={(e) => setconfirmpassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleclick}>
-              {show ? "Hide" : "Show"}
+            <Button h="1.75rem" size="sm" onClick={handleclickConfirm}>
+              {showconfirm ? "Hide" : "Show"}
             </Button>
           </InputRightElement>
         </InputGroup>
