@@ -48,7 +48,7 @@ const userlogin = async (req, res) => {
       res.status(404).json({ msg: "Incorrect password" });
     }
     let token = generateToken(checkuser._id);
-    res.status(200).json({ msg: "let's chat", token: token });
+    res.status(200).json({ msg: "let's chat", userInfo: checkuser,token:token });
   } catch (e) {
     return {
       error: true,
@@ -68,8 +68,9 @@ const getalluser = async (req, res) => {
         }
       : {};
 
-    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
-    res.send(users);
+    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } }).select("-password");
+    // res.send(users);
+    res.status(200).json({msg:users});
   } catch (e) {
     return {
       error: true,

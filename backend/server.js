@@ -26,7 +26,7 @@ const io = require("socket.io")(server,{
 app.use(express.json());
 app.use("/", router);
 
-let PORT=7000;
+let PORT=7000;               // Running on 7000
 connectdatabase()
   .then(() => {
     server.listen(PORT, () => {
