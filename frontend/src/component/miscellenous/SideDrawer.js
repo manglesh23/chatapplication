@@ -38,12 +38,14 @@ const SideDrawer = () => {
   const [loading, setLoading] = useState();
   const [loadingChat, setLoadingChat] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const { user } = ChatState();
 
   console.log("side drawer:-", user?.name);
 
   const navigate = useNavigate();
+
   const logouthandler = () => {
     console.log("log out");
     localStorage.removeItem("userInfo");
@@ -51,7 +53,7 @@ const SideDrawer = () => {
   };
 
 
-  const toast = useToast();
+  
 
   const handlesearch =async () => {
     console.log("search");
@@ -90,6 +92,13 @@ const SideDrawer = () => {
   const accessChat=async(userId)=>{
     console.log(userId,"access chat");
   }
+
+  const handleButtonClick=async()=>{
+    onOpen();
+    setSearch('');
+    setSearchResult([])
+
+  }
   return (
     <>
       <Box
@@ -102,7 +111,7 @@ const SideDrawer = () => {
         borderWidth="5px"
       >
         <Tooltip label="Search User" hasArrow placement="bottom-end">
-          <Button variant="ghost" onClick={onOpen}>
+          <Button variant="ghost" onClick={handleButtonClick}>
             <i class="fa-solid fa-magnifying-glass"></i>
             <Text display={{ base: "none", md: "flex" }} px="4">
               Search User
@@ -131,7 +140,7 @@ const SideDrawer = () => {
                 size="sm"
                 cursor="pointer"
                 name={user?.name}
-                src={user.pic}
+                src={user?.pic}
               />
             </MenuButton>
             <MenuList>
