@@ -40,7 +40,7 @@ const SideDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
-  const { user } = ChatState();
+  const { user, setSelectedChat, chats, setChats } = ChatState();
 
   console.log("side drawer:-", user?.name);
 
@@ -52,10 +52,7 @@ const SideDrawer = () => {
     navigate("/");
   };
 
-
-  
-
-  const handlesearch =async () => {
+  const handlesearch = async () => {
     console.log("search");
     if (!search) {
       toast({
@@ -66,39 +63,64 @@ const SideDrawer = () => {
         position: "top-left",
       });
     }
-    try{
+    try {
       setLoading(true);
 
-      const config={
-        headers:{
-          Authorization:`Bearer ${user.token}`
-        }
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       };
 
-      const {data}= await axios.get(`http://localhost:3001/user?search=${search}`,config);
-      console.log("Result:-",data);
+      const { data } = await axios.get(
+        `http://localhost:3001/user?search=${search}`,
+        config
+      );
+      console.log("Result:-", data);
       setLoading(false);
       setSearchResult(data.msg);
-
-    }catch(e){
-      console.log("error:-",e);
-      return{
-        error:true,
-        details:e
-      }
+    } catch (e) {
+      console.log("error:-", e);
+      return {
+        error: true,
+        details: e,
+      };
     }
   };
 
-  const accessChat=async(userId)=>{
-    console.log(userId,"access chat");
-  }
+  const accessChat = async (userId) => {
+    console.log(userId, "access chat");
+    try {
+      setLoadingChat(true);
+      let data = JSON.stringify({
+        userId: userId,
+      });
 
-  const handleButtonClick=async()=>{
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "http://localhost:7000/accesschat",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        data: data,
+      };
+
+      let response = await axios(config);
+      console.log("Access Chat:-", response.data);
+      setSelectedChat(response.data);
+      setLoadingChat(false);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleButtonClick = async () => {
     onOpen();
-    setSearch('');
-    setSearchResult([])
-
-  }
+    setSearch("");
+    setSearchResult([]);
+  };
   return (
     <>
       <Box
@@ -163,19 +185,24 @@ const SideDrawer = () => {
                 placeholder="Search By User"
                 m="1"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  handlesearch();
+                }}
               />
-              <Button onClick={handlesearch}>Go</Button>
+              {/* <Button onClick={handlesearch}
+              ml="2"
+              isLoading={loading} 
+              aria-label="Search Users" >Go</Button> */}
             </Box>
-            {loading?(
-              <ChatLoading/>
-
-            ):(
-               searchResult?.map(user=>(
+            {loading ? (
+              <ChatLoading />
+            ) : (
+              searchResult?.map((user) => (
                 <UserListItem
-                key={user._id}
-                user={user}
-                handlefunction={()=>accessChat(user._id)}
+                  key={user._id}
+                  user={user}
+                  handlefunction={() => accessChat(user._id)}
                 />
               ))
             )}
